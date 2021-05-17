@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/skeleton.css">
+</head>
+<body>
+    <header>
+        <!--Navbar-->
+        <nav class="navbar navbar-expand-lg navbar-dark indigo mb-4" style="display: block;">
+        <!-- Botão para ver lista de filmes -->
+        <a href="movies.html"><button type="button" class="btn btn-primary" style="margin-right: 15px;">Lista de Filmes</button></a>
+
+        <!-- Botão para sair -->
+        <button type="button" class="btn btn-danger float-right" id="bt-exit" style="margin-left: 15px;">Log Out</button>
+
+        </nav>
+    </header>
+    <main>
+        <!-- imagem de fundo e avatar -->
+        <div class="container-fluid">
+            <div class="news-img-top pos_relative" style="height: 30vh;  background: url(http://br.web.img2.acsta.net/newsv7/20/04/02/08/05/5704147.jpg) repeat scroll center center / cover !important">
+                <div class="row no-gutters">
+                    <div id="avatar" class="image_circle pos_absolute center_el_2">
+                        <img class="profile-pic" src="img/blank-profile.png" alt="avatar">
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- infos do user -->
+        <div class="container-fluid">
+            <div id="user_data" class="container bio_text">
+                <h1>User</h1>
+                <p>Bio</p>
+            </div>
+        </div>
+        <!-- buttons groups -->
+        <div class="container-fluid">
+            <div class="btn-toolbar mb-3" role="toolbar" aria-label="Toolbar with button groups">
+                <div class="btn-group mr-2 center_el_within_block btn-group-lg" role="group" aria-label="First group">
+                    <button type="button" id="go-movies" class="btn btn-secondary">Filmes Vistos</button>
+                    <button type="button" id="add-movie" class="btn btn-secondary">Adicionar novo Filme</button>
+                    <button type="button" id="about" class="btn btn-secondary">Sobre você</button>
+                </div>
+            </div>
+        </div>
+        <!-- lista dos filmes vistos -->
+        <div id="movies" class="container-fluid">
+            <div class="card mb-3 center_el" style="max-width: 940px;">
+                <div class="row no-gutters">
+                <div class="col-md-3">
+                    <!-- <img style="max-width: 200px;" src="https://upload.wikimedia.org/wikipedia/pt/e/ea/Godzilla_vs._Kong.jpg" class="card-img loading" alt="..."> -->
+                    <div class="loading img-skeleton"></div>
+                </div>
+                <div class="col-md-9">
+                    <div class="card-body">
+                    <h5 class="card-title loading title-skeleton"></h5>
+                    <h6 class="card-text loading rating-skeleton"></h6>
+                    <p class="card-text loading com-skeleton"></p>
+                    <p class="card-text-info loading add-skeleton"></p>
+                    <p class="card-text loading button-skeleton"></p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Modal avaliação -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Avaliação</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Estrelas de 0 a 5:</label>
+                            <input type="text" class="form-control" id="recipient-name">
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Comentário:</label>
+                            <textarea class="form-control" id="message-text"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" id="btn-enviar">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal salvar filme -->
+    <div class="modal fade" id="saveModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Filme Salvo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                Escolha em adicionar outros filmes em fechar ou ver lista de filmes.
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="btn-movie-list">Lista de Filmes</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Config Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+    <script src="js/firebaseConf.js"></script>
+    <!-- Scripts do modal -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <!-- Scritp do Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+    <!-- Scripts -->
+    <script src="js/jquery.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/time.js"></script>
+    <script src="js/form.js"></script>
+    
+</body>
+</html>

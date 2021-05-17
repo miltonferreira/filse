@@ -1,0 +1,92 @@
+body {
+    background-color: #282d46;
+}
+
+.indigo {
+    background-color: #3f51b5 !important;
+}
+
+.card, .table-color {
+    background-color: #22263c !important;
+}
+
+.card-body, .table-color {
+    color: white;
+}
+
+/* ajuste do avatar do user */
+
+.image_circle {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+    
+}
+.profile-pic {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.center_el_2 {
+    /* top: 50%; */
+    left: 45%;
+    width: 150px;
+    height: 150px;
+   
+}
+
+.center_el {
+    display: block;
+    margin-left: auto!important;
+    margin-right: auto!important;
+    /* margin-top: 50px; */
+}
+
+.center_el_within_block {
+    margin-left: auto!important;
+    margin-right: auto!important;
+}
+
+.pos_relative {
+    position: relative;
+}
+
+.pos_absolute {
+    position: absolute;
+    bottom: -30px;
+}
+
+.bio_text {
+    text-align: center; 
+    margin-top: 30px;
+    color: white;
+}
+
+/* Aumenta a largura  dos botoes */
+.btn-group-lg>.btn, .btn-lg {
+    padding: .5rem 6rem;
+}
+
+/* botao sair para a direita*/
+
+.bt-right {
+    display: block;
+    margin-left: auto!important;
+    
+}
+
+/* Tabelas */
+
+.table td, .table th {
+    border-top: 1px solid #425263;
+    border-bottom: 1px solid #425263;
+    padding: 1rem;
+}
+
+/* Formulario */
+
+.container {
+    max-width: 940px;
+}

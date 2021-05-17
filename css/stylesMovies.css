@@ -1,0 +1,80 @@
+body {
+    background-color: #282d46;
+}
+
+.indigo {
+    background-color: #3f51b5 !important;
+}
+
+.form-control {
+    border: solid #ccc;
+    border-width: 1px 0 1px 1px;
+    /* border-radius: 2px 0 0 2px; */
+    flex: 1;
+    font-size: 16px;
+    font-weight: 200;
+    height: 33px;
+    margin: 0;
+    min-width: 300px;
+    padding: 5px;
+    -webkit-appearance: textfield;
+}
+
+.card, .table-color {
+    background-color: #22263c !important;
+}
+
+.card-body, .table-color {
+    color: white;
+}
+
+.ml-auto, .mx-auto {
+    margin-left: 50px!important;    /* deixa a searchbar proximo do texto */
+}
+
+.card-text-info {
+    margin-bottom: 0.8rem;
+}
+
+.btn-outline-white {
+    color: #fff !important;
+    background-color: transparent !important;
+    border: 2px solid #fff !important;
+}
+
+/* ajuste do avatar do user */
+
+.image-cropper {
+    margin-left: 10px;
+    display: inline-block;
+    border-radius: 50%;
+    overflow: hidden;
+    width: 40px;
+    height: 40px;
+    
+}
+
+.profile-pic {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+}
+
+.center_el {
+    display: block;
+    margin-left: auto!important;
+    margin-right: auto!important;
+}
+
+.content-center {
+    justify-content: center;
+}
+
+.page-link {
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.btn-disabled {
+    background-color: #888888!important;
+}

@@ -1,0 +1,50 @@
+.loading {
+    background: #282d46;
+    min-height: 28px;
+    position: relative;
+    overflow: hidden;       /*Esconde o efeito de loading vazado*/
+}
+
+.loading::before {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, transparent, #495282, transparent);
+    transform: translateX(-100%);
+    animation: loading 1s infinite;
+}
+
+@keyframes loading {
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+.title-skeleton {
+    max-width: 310px;
+}
+
+.rating-skeleton {
+    max-width: 100px;
+}
+
+.com-skeleton {
+    min-height: 50px;
+    /* max-width: 310px; */
+}
+
+.add-skeleton {
+    max-width: 150px;
+}
+
+.button-skeleton {
+    min-height: 40px;
+    max-width: 68px;
+}
+
+.img-skeleton {
+    min-height: 262px;
+    max-width: 200px;
+}

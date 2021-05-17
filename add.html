@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário Filse</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/stylesMovies.css">
+</head>
+<body>
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark indigo mb-4" style="display: block;">
+        <!-- Botão para ver lista de filmes -->
+        <a href="movies.html"><button type="button" class="btn btn-primary" style="margin-right: 15px;">Lista de Filmes</button></a>
+
+        <!-- Botão para sair -->
+        <button type="button" class="btn btn-danger float-right" id="bt-exit" style="margin-left: 15px;">Log Out</button>
+
+        <!-- avatar do user -->
+        <a href="profile.html">
+            <div id="avatar" class="image-cropper float-right"></div>
+        </a>
+
+    </nav>
+
+    <div class="container mt-3 card card-body p-4">
+        <h4 class="text-center">Adicionar novo Filme</h4>
+        <div class="form-group">
+            <label for="Name">Titulo</label>
+            <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Titulo</div>
+            <input id="title" class="form-control" type="text" placeholder="Digite o nome do filme" >
+        </div>
+        <div class="form-group">
+            <label for="Name">URL de Foto</label>
+            <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Foto</div>
+            <input id="urlPhoto" class="form-control" type="text" placeholder="Digite um link de foto">
+        </div>
+        <div class="form-group">
+            <label for="Email">Descrição</label>
+            <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Descrição</div>
+            <textarea id="description" class="form-control" placeholder="Digite uma descrição"></textarea>
+        </div>
+        <div class="form-group">
+            <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Ano</div>
+            <label for="Message">Ano</label>
+            <input id="age" class="form-control" type="text" placeholder="Digite o ano">
+        </div>
+        <div class="form-group">
+            <label for="Message">Diretor</label>
+            <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Diretor</div>
+            <input id="director" class="form-control" type="text" placeholder="Digite o nome do diretor">
+        </div>
+        <button id="submit" class="btn btn-primary" data-target="#saveModalCenter">Enviar</button>
+        <!-- <button id="submit" class="btn btn-primary" data-toggle="modal" data-target="#saveModalCenter">Enviar</button> -->
+    </div>
+    <!-- Modal salvar filme -->
+    <div class="modal fade" id="saveModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Filme Salvo</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                Escolha em adicionar outros filmes em fechar ou ver lista de filmes.
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+            <button type="button" class="btn btn-primary" id="btn-movie-list">Lista de Filmes</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Config Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+    <script src="js/firebaseConf.js"></script>
+    <!-- Scripts do modal -->
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2/dist/umd/popper.js"></script>
+    <!-- Scritp do Bootstrap -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js" integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/" crossorigin="anonymous"></script>
+    <!-- Scripts -->
+    <script src="js/jquery.js"></script>
+    <script src="js/addMovie.js"></script>
+
+</body>
+</html>
