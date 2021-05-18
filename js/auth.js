@@ -1,8 +1,6 @@
 // config firebase ------------------------------------------------------------------
 connectFirebase();
 
-var firestore = firebase.firestore();
-
 // login por email e senha -----------------------------------------------
 var btnLogin = document.getElementById('btnLogin');
 var inputEmail = document.getElementById('inputEmail');
@@ -18,15 +16,12 @@ btnLogin.addEventListener('click', function(){
 
     firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value)
     .then((userData) => {
-
         login(userData.user);   // verifica se existe o doc uid do user e vai para movies.html
-        
     })
     .catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;
         alert(error.message);
-        // console.log(error.message);
     });
 
 });
@@ -44,7 +39,7 @@ btnLoginGoogle.addEventListener("click", function(){
         // The signed-in user info.
         var user = result.user;
         // procura o UID do user na lista
-        userData = firestore.collection("Users").doc(user.uid);
+        userData = firebase.firestore().collection("Users").doc(user.uid);
 
         userData.get().then(function(doc){
             if(doc.exists){
@@ -83,23 +78,25 @@ btnLoginGoogle.addEventListener("click", function(){
 function login(user){
 
     // user = firebase.auth().currentUser;
-    // var email, uid;
 
-    let userID = user.uid;  // pega o UID do user
-
-    if(userID != null){
+    if(user.uid != null){
         window.location.replace('movies.html');    
     } else {
         window.location.replace('index.html');
     }
 }
 
-// se tiver logado nao deixa entrar nessa página
+// se tiver logado nao deixa ficar no index
 function verifyLogin(){
     // verifica o status do login do user
     firebase.auth().onAuthStateChanged((user) => {
         if(user != null) {
-            window.location.replace('movies.html'); // se tiver logado redireciona para o movies.html
+            userData = firebase.firestore().collection("Users").doc(user.uid);
+            userData.get().then(function(doc){
+                if(doc.exists){
+                    window.location.replace('movies.html'); // se tiver logado redireciona para o movies.html
+                }
+            });
         }
     });
 }
