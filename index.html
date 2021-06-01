@@ -33,6 +33,10 @@
     
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="css/dist/signin.css">
+
+    <link rel="stylesheet" href="css/googleBtn.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans" />
+
   </head>
   <body id="sign-area">
     <!--  -->
@@ -51,8 +55,8 @@
       <!--  -->
       <div class="container-fluid">
         <div class="row">
-            <div class="col-md-12">
-              
+            <div id="loginForm" class="col-md-12">
+
               <form>
                 <!-- <h1 class="h3 mb-3 fw-normal">Login por Email</h1> -->  
                 <div class="form-floating">
@@ -63,14 +67,21 @@
                   <input type="password" class="form-control" id="inputPassword" placeholder="Password">
                   <label for="floatingPassword">Senha</label>
                 </div>
-              
               </form>
+
               <button class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" id="btnLogin">Log In</button>
-              <button class="w-100 btn  btn-primary" id="btnLoginGoogle">Log In Google</button>
-        
-                <p class="mt-5 mb-3 text-muted text-center">&copy; 2021</p>       
+              <button class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" onclick="renderRegister()">Register</button>
+              <!-- <button class="w-100 btn  btn-primary" id="btnLoginGoogle">Log In Google</button> -->
+
+              <div id="btnLoginGoogle" class="google-btn">
+                <div class="google-icon-wrapper">
+                  <img class="google-icon" src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"/>
+                </div>
+                <p class="btn-text"><b>Sign in with google</b></p>
+              </div>
+              
             </div>
-            
+            <p class="mt-5 mb-3 text-muted text-center">&copy; 2021</p>       
         </div>
       </div>
     </main>
