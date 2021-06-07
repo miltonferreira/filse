@@ -110,3 +110,13 @@ body {
         justify-content: center;
     }
 }
+
+@media (max-width: 435px){
+    .navbar {
+        flex-wrap: wrap-reverse;
+        justify-content: center;
+    }
+    .side-start {
+        align-items: normal;
+    }
+}
