@@ -78,3 +78,35 @@ body {
 .btn-disabled {
     background-color: #888888!important;
 }
+
+.search-jc {
+    justify-content: center; /* centraliza a barra de pesquisa*/
+}
+
+.side-end{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+}
+.side-start{
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+@media (max-width: 991px){
+    .card-scroll {
+        max-height: 85px;
+        overflow: auto;
+    }
+}
+
+@media (max-width: 767px){
+    .card-img {
+        width: 60%;
+    }
+    .img-center{
+        display: flex;
+        justify-content: center;
+    }
+}

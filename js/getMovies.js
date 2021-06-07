@@ -6,9 +6,7 @@ var firestore = firebase.firestore();
 var userLogin = null;   // recebe o dados do user vinda do firebase *** remover no futuro
 var userData = null;    // user
 var db = null;          // recebe coleçao de filmes do user
-var dbw = null          // recebe colecáo de filmes vistos do user
-
-
+var dbw = null          // recebe colecao de filmes vistos do user
 
 // paginacao -----------------------------------------------------------
 // botoes de anterior e proximo
@@ -19,36 +17,32 @@ var btnNext = document.querySelector('#next');
 var btNext = false;     // evita que tenha interação mesmo com botao desativado
 
 var prev = [];          // volta na paginacao
-var prevPos = 0;
+var prevPos = 0;        // indica quantas vezes pode volta
 var last = null;        // pega o ultimo filme da lista
-var count = 2;
+var count = 2;          // quantidade de filmes por pagina
 
-var descName = null;
-var orderName = null;
+var descName = null;    // tipo de ordenação dos filmes, adicionado ou por ano
+var orderName = null;   // tipo de ordenação de Decrescente(atual>antigo) ou Crescente(antigo>atual)
 
 var isNext = false;     // indica que usou paginacao
 
-// conta a quantidade de filmes por pagina
+// conta a quantidade de filmes por pagina ----------------------------
 
 var countMovies = 0;    // pega quantidade de filmes nao-vistos
 var seenMovies = 0      // pega quantidade de filmes vistos
 var totalMovies = 0;    // soma os filmes por paginacao quando avança com botao next
 var moviesPerPage = 0;  // pega quantos filmes a pagina carregou para controlar na paginacao
 
-// botoes
-var btnLogout = document.getElementById('bt-exit');
-
+// verifica se esta logado -------------------------------------------
 firebase.auth().onAuthStateChanged((user) => {
     if(user != null) {
 
-        // console.log(user.email);
-        
         userLogin = user;
 
         userData = firestore.collection("Users").doc(userLogin.uid);
                 
-        db = userData.collection("Movies");         //pega a coleção no firestore do user
-        dbw = userData.collection("viewedMovies");
+        db = userData.collection("Movies");             // pega a coleção no firestore do user
+        dbw = userData.collection("viewedMovies");      // recebe colecao de filmes vistos do user
 
         userData.get().then(function(doc){
             if(doc.exists){
@@ -57,16 +51,28 @@ firebase.auth().onAuthStateChanged((user) => {
                 renderAvatar(doc.data().photo);         // adiciona a foto do user
 
             } else {
-                window.location.replace('index.html');
+                window.location.replace('index.html');  // se nao tiver o user na lista de user's, volta para index.html
             }
         });    
 
-        dataDesc();  // mostra adicionados atuais aos antigos
+        dataDesc();  // mostra adicionados dos atuais aos antigos
         
     } else {
         window.location.replace('index.html');  // se nao tiver user logado vou para index.html
     }
 });
+
+// add foto do user na barra superior direita
+function renderAvatar(img){
+    let oImg = document.createElement('img');
+    oImg.setAttribute('src', img);
+    oImg.setAttribute('alt', 'avatar');
+    oImg.className = "profile-pic";
+    document.querySelector('#avatar').append(oImg);
+}
+
+// botão de logout
+var btnLogout = document.getElementById('bt-exit');
 
 btnLogout.addEventListener('click', function(){
     logout();
@@ -82,14 +88,6 @@ function logout(){
 
 }
 
-function renderAvatar(img){
-    let oImg = document.createElement('img');
-    oImg.setAttribute('src', img);
-    oImg.setAttribute('alt', 'avatar');
-    oImg.className = "profile-pic";
-    document.querySelector('#avatar').append(oImg);
-}
-
 
 // dados dos filmes --------------------------------------------------------------------------------------------------------
 
@@ -99,6 +97,7 @@ var mouseup = false;                            // evita que envie várias vezes
 
 // Recebendo um documento -----------------------------------------------
 
+// função não usada
 function moviesAll() {
     db.get().then(function(querySnapshot){
         querySnapshot.forEach(function(doc){
@@ -106,7 +105,7 @@ function moviesAll() {
         })
     });
 }
-
+// função não usada
 function moviesWhere(data1, op, data2) {
     db.where(data1, op, data2).get().then(function(querySnapshot){
         querySnapshot.forEach(function(doc){
@@ -115,6 +114,7 @@ function moviesWhere(data1, op, data2) {
     });
 }
 
+// quando troca ordenação dos filmes, reseta tudo
 function resetPag(){
     isNext = false;                          // indica que pode usar paginacao
     totalMovies = 0;
@@ -155,87 +155,92 @@ function movieAgeDesc(){
 
 // functions para controlar prev e next ---------------------------
 
+// ouvinte do botao de avançar
 btnNext.addEventListener('click', function(){
-    if(totalMovies < countMovies)
+    if(totalMovies < countMovies)   // verifica se não chegou no final
     paginationNext();
 });
 
+// ouvinte do botao de volta
 btnPrev.addEventListener('click', function(){
-    if(prev.length > 1)
+    if(prev.length > 1) // verifica se não chegou no começo
     paginationPrev();
 });
 
-
+// função para limpar a pagina e recebe nova lista de filmes
 function clearPage(){
     document.querySelector('#movies').innerHTML = '';   // limpa a lista de filmes
     movies = [];                                        // limpa o array
 }
 
+// recebe a lista de filmes do user
 function listMovies(docSnapshots){
     docSnapshots.forEach(function(doc){
         var add = movies.push(doc.data());      // adiciona os dados do filme no array
         movies[add - 1].id = doc.id;            // adiciona o id do filme no array
-        renderMovies(movies[add - 1]);          // renderiza o filme no html
+        renderMovies(movies[add - 1]);          // renderiza o filme na lista do html
     });
 }
 
+// função de paginação para avançar lista de filmes
 function paginationNext(){
-
+    // se for a primeira vez que carrega a lista de filmes cai nessa condição
     if(isNext == false){
 
-        var first = db.orderBy(descName, orderName).limit(count);
+        let first = db.orderBy(descName, orderName).limit(count);       // ordena conforme condição das 3 variaveis
 
             first.get().then((docSnapshots) => {
                 
-                clearPage();
+                clearPage();                                            // limpar a pagina e recebe nova lista de filmes
 
                 if(docSnapshots.size > 0){
-                    totalMovies += docSnapshots.docs.length;
-                    moviesPerPage = docSnapshots.docs.length;
+                    totalMovies += docSnapshots.docs.length;            // soma a quantidade de filmes carregados
+                    moviesPerPage = docSnapshots.docs.length;           // pega a quantidade de filmes carregados para decrementar na volta de página
                 }
 
-                prev.push(docSnapshots.docs[0]); 
-                last = docSnapshots.docs[docSnapshots.docs.length-1];
+                prev.push(docSnapshots.docs[0]);                        // pega o primeiro filme da lista
+                last = docSnapshots.docs[docSnapshots.docs.length-1];   // pega o ultimo filme da lista
 
-                listMovies(docSnapshots);   // renderiza lista dos filmes
-                search();               // pesquisa pelo nome
+                listMovies(docSnapshots);                               // envia lista dos filmes para renderizar
+                search();                                               // pesquisa pelo nome
                 
-                isNext = true;              // indica que usou paginacao
-                nextActive();               // ativa botao de next
-                Prevdisabled();             // desativa botao de volta
+                isNext = true;                                          // indica que usou paginacao
+                nextActive();                                           // ativa botao de next
+                Prevdisabled();                                         // desativa botao de volta
 
         });
 
     } else {
         
-        var first = db.orderBy(descName, orderName).startAfter(last).limit(count);
+        // começa ordenação baseado no ultimo filme da lista anterior
+        let first = db.orderBy(descName, orderName).startAfter(last).limit(count);
 
             first.get().then((docSnapshots) => {
 
-                // se for ultima pagina nao vai executa codigo abaixo
+                // se for ultima pagina nao vai executa codigo abaixo pois não vem filme na lista
                 if(docSnapshots.size > 0)
 
-                    totalMovies += docSnapshots.docs.length;
-                    moviesPerPage = docSnapshots.docs.length;
+                    totalMovies += docSnapshots.docs.length;                // soma a quantidade de filmes carregados
+                    moviesPerPage = docSnapshots.docs.length;               // pega a quantidade de filmes carregados para decrementar na volta de página
                     
-                    clearPage();
+                    clearPage();                                            // limpar a pagina e recebe nova lista de filmes
 
-                    prev.push(docSnapshots.docs[0]);  
-                    last = docSnapshots.docs[docSnapshots.docs.length-1];
+                    prev.push(docSnapshots.docs[0]);                        // pega o primeiro filme da lista
+                    last = docSnapshots.docs[docSnapshots.docs.length-1];   // pega a quantidade de filmes carregados para decrementar na volta de página
 
-                    listMovies(docSnapshots);   // renderiza lista dos filmes
+                    listMovies(docSnapshots);                               // envia lista dos filmes para renderizar
 
-                    search();               // pesquisa pelo nome
-                    prevPos += 1;
+                    search();                                               // pesquisa pelo nome
+                    prevPos += 1;                                           // indica quantas vezes pode volta
 
-                    
-                    if(totalMovies >= countMovies){
-                        nextDisabled();
+                    // verifica se os filmes carregados é => que os quantidade TOTAL de filmes não-vistos do user
+                    if(totalMovies >= countMovies){                          
+                        nextDisabled();                                     // desativa botao de next caso seja TRUE
                     } else {
-                        nextActive();
+                        nextActive();                                       // ativa botao de next caso seja FALSE
                     }
         
-                    PrevActive();
+                    PrevActive();                                           // ativa botão de volta, já que existe lista anteriores
                 
         });
 
@@ -326,14 +331,14 @@ function renderMovies(movie) {
 
             <div class="card mb-3" style="max-width: 940px;">
                 <div class="row no-gutters">
-                <div class="col-md-4">
+                <div class="col-md-4 img-center">
                     <img src="${movie.photo}" class="card-img" alt="...">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
                     <h5 class="card-title">${movie.title}</h5>
                     <h6 class="card-text">${movie.age}</h6>
-                    <p class="card-text">${movie.description}.</p>
+                    <p class="card-text card-scroll">${movie.description}.</p>
                     <p class="card-text-info"><small>Diretor: ${movie.director}</small></p>
                     <p class="card-text-info"><small>Adicionado: ${this.convertToDate(movie.added)}</small></p>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="btWatched('${movie.id}')">Assistiu</button>
@@ -350,14 +355,14 @@ function renderMovies(movie) {
 
             <div class="card mb-3" style="max-width: 940px;">
                 <div class="row no-gutters">
-                <div class="col-md-4">
+                <div class="col-md-4 img-center">
                     <img src="${movie.photo}" class="card-img" alt="...">
                 </div>
                 <div class="col-md-8">
                     <div class="card-body">
                     <h5 class="card-title">${movie.title}</h5>
                     <h6 class="card-text">${movie.age}</h6>
-                    <p class="card-text">${movie.description}.</p>
+                    <p class="card-text card-scroll">${movie.description}.</p>
                     <p class="card-text-info"><small>Diretor: ${movie.director}</small></p>
                     <p class="card-text-info"><small>Adicionado: ${this.convertToDate(movie.added)}</small></p>
                     <p class="card-text-info"><small>Avalição: ${movie.rating}</small></p>
