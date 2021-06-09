@@ -89,7 +89,7 @@ function renderMovies(movie) {
 
             <div class="card mb-3 center_el" style="max-width: 940px;">
                 <div class="row no-gutters">
-                <div class="col-md-3">
+                <div class="col-md-3 img-center">
                     <img style="max-width: 200px;" src="${movie.photo}" class="card-img" alt="...">
                 </div>
                 <div class="col-md-9">

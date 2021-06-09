@@ -35,6 +35,10 @@
     /* max-width: 310px; */
 }
 
+.text-skeleton {
+    min-width: 150px;
+}
+
 .add-skeleton {
     max-width: 150px;
 }

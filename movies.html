@@ -6,6 +6,7 @@
     <title>Lista de Filmes</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/stylesMovies.css">
+    <link rel="stylesheet" href="css/skeleton.css">
 </head>
 <body>
     <!--Navbar-->
@@ -44,10 +45,45 @@
         </div>
 
     </nav>
-    
-    <div class="container">
-        <div id="movies" class="row row-md-12">
-            
+    <!-- Lista de filmes não-vistos do user -->
+    <div id="movies" class="container">
+        <div class="movie center_el" style="padding: 5px;">
+            <div class="card mb-3" style="max-width: 940px;">
+                <div class="row no-gutters">
+                <div class="col-md-4 img-center">
+                    <div class="loading img-skeleton center_el_2"></div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title loading title-skeleton"></h5>
+                        <h6 class="card-text loading rating-skeleton"></h6>
+                        <p class="card-text card-scroll loading com-skeleton"></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text loading button-skeleton"></p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="movie center_el" style="padding: 5px;">
+            <div class="card mb-3" style="max-width: 940px;">
+                <div class="row no-gutters">
+                <div class="col-md-4 img-center">
+                    <div class="loading img-skeleton center_el_2"></div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title loading title-skeleton"></h5>
+                        <h6 class="card-text loading rating-skeleton"></h6>
+                        <p class="card-text card-scroll loading com-skeleton"></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text loading button-skeleton"></p>
+                    </div>
+                </div>
+                </div>
+            </div>
         </div>
     </div>
     
