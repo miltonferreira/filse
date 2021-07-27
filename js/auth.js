@@ -1,5 +1,3 @@
-// config firebase ------------------------------------------------------------------
-connectFirebase();
 
 // login por email e senha -----------------------------------------------
 var btnLogin = null;

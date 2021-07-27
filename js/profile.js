@@ -1,5 +1,3 @@
-// config firebase ------------------------------------------------------------------
-connectFirebase();
 
 var firestore = firebase.firestore();
 
@@ -21,7 +19,7 @@ var btnLogout = document.getElementById('bt-exit');
 
 // verifica o status do login do user
 firebase.auth().onAuthStateChanged((user) => {
-    if(user != null) {
+    if(user) {
         
         userLogin = user;
 
@@ -35,6 +33,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 moviesUser = doc.data().movies;             // pega quantidade de filmes do user
                 countMovies = doc.data().countMovies;       // pega quantidade de filmes nao-vistos
                 userInfos = doc.data();
+
                 getInfoUser();
 
             } else {
@@ -184,12 +183,16 @@ function aboutUser(){
                         <td>${userInfos.country}</td>
                     </tr>
                     <tr>
-                        <th scope="row">Filmes</th>
+                        <th scope="row">Total de Filmes</th>
                         <td>${userInfos.movies}</td>
                     </tr>
                     <tr>
                         <th scope="row">Filmes Vistos</th>
                         <td>${userInfos.seenMovies}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Filmes Não Vistos</th>
+                        <td>${userInfos.countMovies}</td>
                     </tr>
                     </tbody>
                 </table>
@@ -289,20 +292,9 @@ function saveMovie(titleInput, urlPhotoInput, descriptionInput, ageInput, direct
 
     });
 
-    
 }
 
 // controla botao de logout --------------------------------------------------
 btnLogout.addEventListener('click', function(){
     logout();
 });
-
-function logout(){
-
-    firebase.auth().signOut().then(function() {
-        // Sign-out successful.
-      }).catch(function(error) {
-        // An error happened.
-      });
-
-}

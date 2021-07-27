@@ -102,7 +102,3 @@ function clearForm(){
     age.value = "";
     director.value = "";
 }
-
-function updateTime(){
-    return Math.floor(new Date().getTime()/1000.0); // retorna o tempo
-}

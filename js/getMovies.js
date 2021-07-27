@@ -1,5 +1,3 @@
-// config firebase ------------------------------------------------------------------
-connectFirebase();
 
 var firestore = firebase.firestore();
 
@@ -35,16 +33,15 @@ var moviesPerPage = 0;  // pega quantos filmes a pagina carregou para controlar 
 
 // verifica se esta logado -------------------------------------------
 firebase.auth().onAuthStateChanged((user) => {
-    if(user != null) {
+    if(user) {
 
-        userLogin = user;
-
-        userData = firestore.collection("Users").doc(userLogin.uid);
+        user = firestore.collection("Users").doc(user.uid);
+        userData = user;    // usado no updateInfoMovie
                 
-        db = userData.collection("Movies");             // pega a coleção no firestore do user
-        dbw = userData.collection("viewedMovies");      // recebe colecao de filmes vistos do user
+        db = user.collection("Movies");             // pega a coleção no firestore do user
+        dbw = user.collection("viewedMovies");      // recebe colecao de filmes vistos do user
 
-        userData.get().then(function(doc){
+        user.get().then((doc) =>{
             if(doc.exists){
                 countMovies = doc.data().countMovies;   // quantidade de filmes nao-vistos
                 seenMovies = doc.data().seenMovies;     // quantidade de filmes vistos
@@ -78,20 +75,9 @@ btnLogout.addEventListener('click', function(){
     logout();
 });
 
-function logout(){
-
-    firebase.auth().signOut().then(function() {
-        // Sign-out successful.
-      }).catch(function(error) {
-        // An error happened.
-      });
-
-}
-
-
 // dados dos filmes --------------------------------------------------------------------------------------------------------
 
-var movies = [];
+var movies = [];                                // recebe a lista do filmes
 var movieId;                                    // recebe ID do filme
 var mouseup = false;                            // evita que envie várias vezes o update do filme
 
@@ -175,7 +161,7 @@ function clearPage(){
 
 // recebe a lista de filmes do user
 function listMovies(docSnapshots){
-    docSnapshots.forEach(function(doc){
+    docSnapshots.forEach((doc) =>{
         var add = movies.push(doc.data());      // adiciona os dados do filme no array
         movies[add - 1].id = doc.id;            // adiciona o id do filme no array
         renderMovies(movies[add - 1]);          // renderiza o filme na lista do html
@@ -288,25 +274,25 @@ function paginationDebug(){
 
 function nextDisabled(){
     // desativa botao de volta
-    btnNext.classList.add("disabled");
+    btnNext.classList.add("disabled");      // util para trocar estilização do botão via js
     document.querySelector('#next > a').classList.add("btn-disabled");
 }
 
 function nextActive(){
     // ativa botao de volta
-    btnNext.classList.remove("disabled");
+    btnNext.classList.remove("disabled");   // util para trocar estilização do botão via js
     document.querySelector('#next > a').classList.remove("btn-disabled");
 }
 
 function Prevdisabled(){
     // desativa botao de volta
-    btnPrev.classList.add("disabled");
+    btnPrev.classList.add("disabled");      // util para trocar estilização do botão via js
     document.querySelector('#prev > a').classList.add("btn-disabled");
 }
 
 function PrevActive(){
     // ativa botao de volta
-    btnPrev.classList.remove("disabled");
+    btnPrev.classList.remove("disabled");   // util para trocar estilização do botão via js
     document.querySelector('#prev > a').classList.remove("btn-disabled");
 }
 
@@ -340,7 +326,7 @@ function renderMovies(movie) {
                     <h6 class="card-text">${movie.age}</h6>
                     <p class="card-text card-scroll">${movie.description}.</p>
                     <p class="card-text-info"><small>Diretor: ${movie.director}</small></p>
-                    <p class="card-text-info"><small>Adicionado: ${this.convertToDate(movie.added)}</small></p>
+                    <p class="card-text-info"><small>Adicionado: ${convertToDate(movie.added)}</small></p>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="btWatched('${movie.id}')">Assistiu</button>
                     </div>
                 </div>
@@ -364,7 +350,7 @@ function renderMovies(movie) {
                     <h6 class="card-text">${movie.age}</h6>
                     <p class="card-text card-scroll">${movie.description}.</p>
                     <p class="card-text-info"><small>Diretor: ${movie.director}</small></p>
-                    <p class="card-text-info"><small>Adicionado: ${this.convertToDate(movie.added)}</small></p>
+                    <p class="card-text-info"><small>Adicionado: ${convertToDate(movie.added)}</small></p>
                     <p class="card-text-info"><small>Avalição: ${movie.rating}</small></p>
                     <p class="card-text-info"><small>Comentário: ${movie.comment}</small></p>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" onclick="btWatched('${movie.id}')">Editar</button>
@@ -464,19 +450,6 @@ function setSeenMovies(){
     return seenMovies = seenMovies+1;
 }
 
-function updateTime(){
-    return Math.floor(new Date().getTime()/1000.0); // retorna o tempo
-}
-
-function convertToDate(time){
-
-    data = new Date(time * 1000);   // converte para milliseconds, somente -> new Date() <- pega a data do PC
-    date = `${data.getDate()}/${data.getMonth()+1}/${data.getFullYear()}`;
-    hours = `${data.getHours()}:${data.getMinutes()}:${data.getSeconds()}`
-
-    return date + " - " + hours;
-}
-
 function search(){
     const searchInput = document.getElementById("search");
 
@@ -484,9 +457,9 @@ function search(){
 
     // console.log(rows);
 
-    searchInput.addEventListener("keyup", function (event) {
+    searchInput.addEventListener("keyup", (event) => {
 
-        const q = event.target.value.toLowerCase();
+        const q = event.target.value.toLowerCase(); // pega o que user digitou na pesquisa
 
         rows.forEach((row) => {
             row.querySelector(".card-title").textContent.toLowerCase().startsWith(q)

@@ -1,0 +1,2 @@
+- quando add filme do profile, atualizar infos do "Sobre você"
+- ajusta popup com infos quando finaliza add filme, está confuso entender

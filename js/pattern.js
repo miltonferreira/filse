@@ -1,3 +1,11 @@
+// funções usadas pelos arquivos JS
+
+function logout(){
+    firebase.auth().signOut().catch((error) =>{
+        alert('Falha ao sair: ' + error);
+      });
+}
+
 function convertToDate(time){
 
     data = new Date(time * 1000);   // converte para milliseconds, somente -> new Date() <- pega a data do PC

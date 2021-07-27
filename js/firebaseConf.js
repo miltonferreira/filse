@@ -14,3 +14,5 @@ function connectFirebase() {
 
 }
 
+connectFirebase();  // executa config do firebase
+

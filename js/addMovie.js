@@ -1,5 +1,3 @@
-// config firebase ------------------------------------------------------------------
-connectFirebase();
 
 var firestore = firebase.firestore();
 
@@ -51,19 +49,9 @@ firebase.auth().onAuthStateChanged((user) => {
 
 });
 
-btnLogout.addEventListener('click', function(){
+btnLogout.addEventListener('click', ()=>{
     logout();
 });
-
-function logout(){
-
-    firebase.auth().signOut().then(function() {
-        // Sign-out successful.
-      }).catch(function(error) {
-        // An error happened.
-      });
-
-}
 
 function renderAvatar(img){
     let oImg = document.createElement('img');
@@ -193,8 +181,4 @@ function clearForm(title, urlPhoto, description, age, director){
     description.value = "";
     age.value = "";
     director.value = "";
-}
-
-function updateTime(){
-    return Math.floor(new Date().getTime()/1000.0); // retorna o tempo
 }
