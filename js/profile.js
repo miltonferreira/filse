@@ -17,6 +17,16 @@ var countMovies = 0;    // pega quantidade de filmes nao-vistos
 // botoes
 var btnLogout = document.getElementById('bt-exit');
 
+// avatar do user
+var avatar = document.getElementById('avatar');                     // avatar atual do user
+var avatarChange = document.getElementById('avatar-change');        // avatar novo do user
+
+var btnAvatarSend = document.getElementById('submit-img');          // botão que envia novo avatar para o storage do user
+var avatarSend = document.getElementById('avatar-change-send');     //div pai do botão
+
+var inputFile = document.getElementById('input-file');              // input que recebe a imagem
+
+
 // verifica o status do login do user
 firebase.auth().onAuthStateChanged((user) => {
     if(user) {
@@ -32,9 +42,9 @@ firebase.auth().onAuthStateChanged((user) => {
             if(doc.exists){
                 moviesUser = doc.data().movies;             // pega quantidade de filmes do user
                 countMovies = doc.data().countMovies;       // pega quantidade de filmes nao-vistos
-                userInfos = doc.data();
+                userInfos = doc.data();                     // recebe nome, avatar e outras infos do user
 
-                getInfoUser();
+                getInfoUser();      // mostra infos do user
 
             } else {
                 window.location.replace('index.html');
@@ -48,12 +58,121 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 });
 
-
 // infos do user ----------------------------------------------------------
 function getInfoUser(){
     document.querySelector('#user_data>p').innerHTML = `${userInfos.bio}`;
     document.querySelector('#avatar>img').setAttribute('src', userInfos.photo);
     document.querySelector('#user_data>h1').innerHTML = `${userInfos.name}`;
+
+    // EventListener para alterar avatar do user ----------------
+    var vTimer = null;
+
+    avatar.addEventListener("mouseenter", ()=> {
+        avatarChange.className = "pos_absolute_2 center_el_3 dp-block";
+        vTimer == null ? null : clearTimeout(vTimer);   // cancela esconde input de trocar avatar depois de 3s
+    });
+    avatar.addEventListener("mouseleave", ()=> {
+        vTimer = setTimeout(hideAvatarChange, 3000);    // esconde input de trocar avatar depois de 3s
+    });
+    avatarChange.addEventListener("mouseleave", ()=> {
+        hideAvatarChange();
+        vTimer == null ? null : clearTimeout(vTimer);   // cancela esconde input de trocar avatar depois de 3s
+    });
+}
+
+function hideAvatarChange(){
+    // esconde input de trocar avatar
+    avatarChange.className = "pos_absolute_2 center_el_3 dp-none";
+}
+
+// botao que enviar novo avatar
+btnAvatarSend.addEventListener('click', ()=>{
+    avatarSend.className = "pos_absolute_2 center_el_4 dp-none";    //  esconde div com botão de enviar img
+    sendStorage(inputFile.files[0]);    // envia novo avatar para o storage do user
+});
+
+// verifica se add nova imagem / mostra ao user nova imagem / mostra botão de enviar imagem ao storage
+inputFile.addEventListener('change', function(){
+
+    avatarSend.className = "pos_absolute_2 center_el_4 dp-block";       //  mostra div com botão de enviar img
+    hideAvatarChange();      //  esconde input de enviar img
+
+    var fReader = new FileReader();
+
+    fReader.readAsDataURL(inputFile.files[0]);
+    
+    fReader.onloadend = function(event){    // mostra imagem nova no perfil antes de enviar ao storage
+        var img = document.querySelector('#avatar>img');
+        img.src = event.target.result;
+        /* solução trocar avatar localmente: https://qastack.com.br/programming/4851595/how-to-resolve-the-c-fakepath */
+    }
+});
+
+// envia novo avatar para o storage do user
+function sendStorage(file){
+
+    if(file !=null){
+        if(file.type.includes('image')){   
+            // se maior que 1 Mbs
+            if(file.size > 1024 * 1024){
+                alert('Imagem maior que 1 MBs! Imagem tem ' + (file.size / 1024 / 1014).toFixed(3) + ' MBs');
+                return;
+            }
+
+            var imgName = firebase.database().ref().push().key + '-' + file.name;                   // gera uma chave para img
+            var imgPath = 'filesUsers/' + firebase.auth().currentUser.uid + '/' + imgName;          // pasta do user
+
+            var storageRef = firebase.storage().ref(imgPath);   //referencia de arquivo com caminho
+            var upload = storageRef.put(file);                  // envia arquivo para o storage
+
+            // monitora o upload esperando o upload ser concluido
+            trackUpload(upload).then(()=>{
+
+                // recebe a url de download da imagem
+                storageRef.getDownloadURL().then((downloadURL)=>{
+
+                    removeAvatar(userInfos.photo);  // remove avatar antigo do storage
+                    userInfos.photo = downloadURL;  // recebe nova url do avatar
+            
+                    changeAvatar(userInfos.photo);   // atualiza url do avatar no firestore
+
+                });
+
+            }).catch((error)=>{
+                alert('Falha enviar imagem: ', error);
+                console.log('Falha enviar imagem: ', error);
+            });
+
+        }else{
+            alert('Envie somente imagens');
+        }
+
+    }
+
+}
+
+// salva nova url do avatar do user
+function changeAvatar(imgUrl){
+
+    let dbFirestore = firestore.collection("Users");
+
+    dbFirestore.doc(firebase.auth().currentUser.uid).set({
+            photo: imgUrl,
+        }, { merge: true }).then(()=>{
+            alert('Avatar atualizado!');
+        }).catch((error)=>{
+            alert('Falha: ', error);
+        });
+}
+
+// remove avatar antigo do storage
+function removeAvatar(imgUrl){
+    
+    firebase.storage().refFromURL(imgUrl).delete()
+        .catch((error) =>{
+            console.log(error);
+        });
+
 }
 
 // mostra lista dos filmes assistidos -------------------------------------
