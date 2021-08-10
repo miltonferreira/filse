@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="img/filseIcon.png" type="image/x-icon">
     <title>Perfil</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/profile.css">
@@ -24,20 +25,21 @@
     <main>
         <!-- imagem de fundo e avatar -->
         <div class="container-fluid">
-            <div class="news-img-top pos_relative" style="height: 30vh;  background: url(http://br.web.img2.acsta.net/newsv7/20/04/02/08/05/5704147.jpg) repeat scroll center center / cover !important">
+            <div class="news-img-top pos-relative dpFlexCenter" style="height: 30vh;  background: url(http://br.web.img2.acsta.net/newsv7/20/04/02/08/05/5704147.jpg) repeat scroll center center / cover !important">
                 <div class="row no-gutters">
-                    <div id="avatar" class="image_circle pos_absolute center_el_2">
+                    <div id="avatar" class="image_circle">
                         <img class="profile-pic" src="img/blank-profile.png" alt="avatar">
+                        <div id="avatar-change-send" class="pos-absolute over-btn dp-none">
+                        <button type="submit" id="submit-img">Enviar</button>
                     </div>
-                    <div id="avatar-change" class="pos_absolute_2 center_el_3 dp-none">
+                    </div>
+                    <div id="avatar-change" class="pos-absolute over-avatar dp-none">
                         <label for='input-file'>
                             <img class="profile-pic image_circle" src="img/blank-profile.png" alt="avatar">
                         </label>
                         <input id='input-file' type='file' accept="image/*">
                     </div>
-                    <div id="avatar-change-send" class="pos_absolute_2 center_el_4 dp-none">
-                        <button type="submit" id="submit-img">Enviar</button>
-                    </div>
+                    
                 </div>
             </div>
         </div>
@@ -134,7 +136,7 @@
             </button>
             </div>
             <div class="modal-body">
-                Escolha em adicionar outros filmes em fechar ou ver lista de filmes.
+                Botão "Fechar" para adicionar filmes ou ir para "lista de filmes".
             </div>
             <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>

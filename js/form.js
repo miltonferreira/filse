@@ -7,11 +7,13 @@ let alerts = null;                  // pega todos os alerts
 let title = null;
 let urlPhoto = null;
 let description = null;
-let age = null;
 let director = null;
+let age = null;
 
 // Start grabbing our DOM Element
 let submitBtn = null;
+
+//let btnSub = null;  // indica qual é o botão de submit
 
 function submitMovie(){
 
@@ -19,8 +21,8 @@ function submitMovie(){
     title = document.querySelector('#title');
     urlPhoto = document.querySelector('#urlPhoto');
     description = document.querySelector('#description');
-    age = document.querySelector('#age');
     director = document.querySelector('#director');
+    age = document.querySelector('#age');
 
     // Start grabbing our DOM Element
     submitBtn = document.querySelector('#submit');
@@ -32,8 +34,7 @@ function submitMovie(){
         aler.style = "display: none";   // esconde os alerts dos campos
     });
 
-    // salva infos do filme ----------------------------------------------------------------
-
+    // verifica se campos estão preenchidos ----------------------------------------------------------------
     alertReturn = checkForm(title, urlPhoto, description, age, director);
 
     if(alertReturn){
@@ -47,7 +48,6 @@ function submitMovie(){
 }
 
 // checa se os campos do formulario foram preenchidos -------------------------------
-
 function checkForm(title, urlPhoto, description, age, director){
 
     if(title.value == ""){
@@ -94,11 +94,83 @@ function checkForm(title, urlPhoto, description, age, director){
 }
 
 // limpa os campos do formulario ---------------------------------------------
-
 function clearForm(){
     title.value = "";
     urlPhoto.value = "";
     description.value = "";
     age.value = "";
     director.value = "";
+}
+
+// formulario add novo filme -------------------------------------------------
+function newMovie(){
+
+    document.querySelector('#movies').innerHTML = '';   // limpa a lista de filmes
+
+    let div = document.createElement('div');
+    div.className = "movie";
+    div.setAttribute("style", "padding: 5px;");
+
+    div.innerHTML = `
+
+        <div class="container mt-3 card card-body p-4">
+            <div class="form-group">
+                <label for="Name">Titulo</label>
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Titulo</div>
+                <input id="title" class="form-control" type="text" placeholder="Digite o nome do filme" >
+            </div>
+            <div class="form-group">
+                <label for="Name">URL de Foto</label>
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Foto</div>
+                <input id="urlPhoto" class="form-control" type="text" placeholder="Digite um link de foto">
+            </div>
+            <div class="form-group">
+                <label for="Email">Descrição</label>
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Descrição</div>
+                <textarea id="description" class="form-control" placeholder="Digite uma descrição"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="Message">Diretor</label>
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Diretor</div>
+                <input id="director" class="form-control" type="text" placeholder="Digite o nome do diretor">
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Ano</div>
+                <label for="Message">Ano</label>
+                <input id="age" class="form-control" type="text" placeholder="Digite o ano do filme">
+            </div>
+            <button id="submit" class="btn btn-primary" data-target="#saveModalCenter" onclick="submitMovie()">Enviar</button>
+        </div>
+
+    `;
+
+    document.querySelector('#movies').append(div);
+
+}
+
+// salva o filme no firebase ----------------------------------------
+function saveMovie(titleInput, urlPhotoInput, descriptionInput, ageInput, directorInput){
+
+    var data = {
+        added: updateTime(),
+        title: titleInput,
+        photo: urlPhotoInput,
+        description: descriptionInput,
+        age: ageInput,
+        director: directorInput,
+        comment: null, 
+        rating: 0,
+        watched: false,
+    };
+    
+    // salva o filme no firebase
+    dbMovies.add(data).then(()=>{
+
+        clearForm();                            // limpa formulario
+        $('#saveModalCenter').modal('show');    // chama modal quando salva o filme
+        
+    }).catch((error)=>{
+        console.log(error);
+    });
+
 }

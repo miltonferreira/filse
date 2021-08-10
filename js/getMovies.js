@@ -1,10 +1,8 @@
 
 var firestore = firebase.firestore();
 
-var userLogin = null;   // recebe o dados do user vinda do firebase *** remover no futuro
-var userData = null;    // user
-var db = null;          // recebe coleçao de filmes do user
-var dbw = null          // recebe colecao de filmes vistos do user
+var dbMovie = null;              // recebe coleçao de filmes do user
+var dbVMovie = null         // recebe colecao de filmes vistos do user
 
 // paginacao -----------------------------------------------------------
 // botoes de anterior e proximo
@@ -15,9 +13,9 @@ var btnNext = document.querySelector('#next');
 var btNext = false;     // evita que tenha interação mesmo com botao desativado
 
 var prev = [];          // volta na paginacao
-var prevPos = 0;        // indica quantas vezes pode volta
+var prevPos = 0;        // indica quantas vezes pode voltar
 var last = null;        // pega o ultimo filme da lista
-var count = 2;          // quantidade de filmes por pagina
+var count = 3;          // quantidade de filmes por pagina
 
 var descName = null;    // tipo de ordenação dos filmes, adicionado ou por ano
 var orderName = null;   // tipo de ordenação de Decrescente(atual>antigo) ou Crescente(antigo>atual)
@@ -27,7 +25,6 @@ var isNext = false;     // indica que usou paginacao
 // conta a quantidade de filmes por pagina ----------------------------
 
 var countMovies = 0;    // pega quantidade de filmes nao-vistos
-var seenMovies = 0      // pega quantidade de filmes vistos
 var totalMovies = 0;    // soma os filmes por paginacao quando avança com botao next
 var moviesPerPage = 0;  // pega quantos filmes a pagina carregou para controlar na paginacao
 
@@ -36,24 +33,22 @@ firebase.auth().onAuthStateChanged((user) => {
     if(user) {
 
         user = firestore.collection("Users").doc(user.uid);
-        userData = user;    // usado no updateInfoMovie
                 
-        db = user.collection("Movies");             // pega a coleção no firestore do user
-        dbw = user.collection("viewedMovies");      // recebe colecao de filmes vistos do user
+        dbMovie = user.collection("Movies");             // pega a coleção no firestore do user
+        dbVMovie = user.collection("viewedMovies");      // recebe colecao de filmes vistos do user
 
         user.get().then((doc) =>{
             if(doc.exists){
-                countMovies = doc.data().countMovies;   // quantidade de filmes nao-vistos
-                seenMovies = doc.data().seenMovies;     // quantidade de filmes vistos
                 renderAvatar(doc.data().photo);         // adiciona a foto do user
-
+                dbMovie.get().then((snapshot)=>{
+                    countMovies = snapshot.size;
+                    dataDesc();  // mostra filmes adicionados dos atuais aos antigos
+                });
             } else {
                 window.location.replace('index.html');  // se nao tiver o user na lista de user's, volta para index.html
             }
         });    
 
-        dataDesc();  // mostra adicionados dos atuais aos antigos
-        
     } else {
         window.location.replace('index.html');  // se nao tiver user logado vou para index.html
     }
@@ -71,10 +66,6 @@ function renderAvatar(img){
 // botão de logout
 var btnLogout = document.getElementById('bt-exit');
 
-btnLogout.addEventListener('click', function(){
-    logout();
-});
-
 // dados dos filmes --------------------------------------------------------------------------------------------------------
 
 var movies = [];                                // recebe a lista do filmes
@@ -85,7 +76,7 @@ var mouseup = false;                            // evita que envie várias vezes
 
 // função não usada
 function moviesAll() {
-    db.get().then(function(querySnapshot){
+    dbMovie.get().then(function(querySnapshot){
         querySnapshot.forEach(function(doc){
         console.log(doc.id, "=>", doc.data());
         })
@@ -93,7 +84,7 @@ function moviesAll() {
 }
 // função não usada
 function moviesWhere(data1, op, data2) {
-    db.where(data1, op, data2).get().then(function(querySnapshot){
+    dbMovie.where(data1, op, data2).get().then(function(querySnapshot){
         querySnapshot.forEach(function(doc){
         console.log(doc.id, "=>", doc.data());
         })
@@ -168,12 +159,12 @@ function listMovies(docSnapshots){
     });
 }
 
-// função de paginação para avançar lista de filmes
+// paginação para avançar lista de filmes
 function paginationNext(){
     // se for a primeira vez que carrega a lista de filmes cai nessa condição
     if(isNext == false){
 
-        let first = db.orderBy(descName, orderName).limit(count);       // ordena conforme condição das 3 variaveis
+        let first = dbMovie.orderBy(descName, orderName).limit(count);       // ordena conforme condição das 3 variaveis
 
             first.get().then((docSnapshots) => {
                 
@@ -199,7 +190,7 @@ function paginationNext(){
     } else {
         
         // começa ordenação baseado no ultimo filme da lista anterior
-        let first = db.orderBy(descName, orderName).startAfter(last).limit(count);
+        let first = dbMovie.orderBy(descName, orderName).startAfter(last).limit(count);
 
             first.get().then((docSnapshots) => {
 
@@ -234,9 +225,10 @@ function paginationNext(){
 
 }
 
+// paginação de voltar lista de filmes
 function paginationPrev(){
 
-    var first = db.orderBy(descName, orderName).startAt(prev[prevPos - 1]).limit(count);
+    var first = dbMovie.orderBy(descName, orderName).startAt(prev[prevPos - 1]).limit(count);
 
             first.get().then((docSnapshots) => {
 
@@ -264,14 +256,8 @@ function paginationPrev(){
         });
 }
 
-function paginationDebug(){
-    console.log("totalMovies: ", totalMovies);
-    console.log("countMovies: ", countMovies);
-    console.log("prev: ", prev.length);
-}
-
 // ativa ou desativa botoes de prev e next ------------------------------------------------------------------------------
-
+//#region botoes de prev e next
 function nextDisabled(){
     // desativa botao de volta
     btnNext.classList.add("disabled");      // util para trocar estilização do botão via js
@@ -295,14 +281,7 @@ function PrevActive(){
     btnPrev.classList.remove("disabled");   // util para trocar estilização do botão via js
     document.querySelector('#prev > a').classList.remove("btn-disabled");
 }
-
-// sem uso
-function addMovie(doc){
-    var add = movies.push(doc.data());      // adiciona os dados do filme no array
-    movies[add - 1].id = doc.id;            // adiciona o id do filme no array
-    renderMovies(movies[add - 1]);          // renderiza o filme no html
-}
-
+//#endregion
 
 // renderiza a lista de filmes na tela
 function renderMovies(movie) {
@@ -367,6 +346,7 @@ function renderMovies(movie) {
 
 }
 
+// escolhe a ordenação
 function selectMovie(){
     
     var d = document.getElementById("ddselect");
@@ -383,54 +363,48 @@ function selectMovie(){
     }
 }
 
-function btWatched(id){     // botao para indicar que assistiu o filme
+// botao para indicar que assistiu o filme
+function btWatched(id){     
     movieId = id;           // pega id do filme
     mouseup = false;        
     addRatCom();            // pega a avaliação e o comentário e usa o metodo do jquery.js
 }
 
 // atualiza filme para visto -------------------------------------------------
-
 function updateInfoMovie(rating, comment){
-    var Ref = db.doc(movieId);
 
-    userData.set({
-        countMovies: setCountMovies(),       // -1 filme nao visto
-        seenMovies: setSeenMovies(),         // +1 filme visto
-    }, { merge: true }).then(function(){    
-        // atualiza filme ---------------------------------
-        var setWithMerge = Ref.set({
-            added: updateTime(),
-            comment: comment, 
-            rating: rating,
-            watched: true,
-        }, { merge: true }).then(function() {
+    let Ref = dbMovie.doc(movieId);
 
-            // resposta ao conseguir modificar o valor ---------------------------
-            if(mouseup == false){
-                mouseup = true;         // evita que atualize mais de 1 vez
-                saveWatchedMovie(Ref);  // salva filme na coleçao de filmes vistos
-            }
-            console.log(countMovies, seenMovies);
-        })
-        .catch(function(error) {
-            console.error("Error writing document: ", error);
-        });    
-        // atualiza filme ---------------------------------
-    });
+    let data = {
+        added: updateTime(),
+        comment: comment, 
+        rating: rating,
+        watched: true,
+    };
+
+    Ref.set({data}, { merge: true }).then(()=>{
+
+        // resposta ao conseguir modificar o valor ---------------------------
+        if(mouseup == false){
+            mouseup = true;         // evita que atualize mais de 1 vez
+            saveWatchedMovie(Ref);  // salva filme na coleçao de filmes vistos
+        }
+        
+    }).catch((error)=>{
+        console.error("Error writing document: ", error);
+    }); 
     
 }
 
 // salva filme na colecao de filmes vistos ---------------------------------------------------
-
 function saveWatchedMovie(movie){
     
     movie.get().then((doc) => {
         
-        dbw.doc(movieId).set(doc.data());
+        dbVMovie.doc(movieId).set(doc.data());  // salva viu na coleção de filmes vistos
 
-        movie.delete().then(() => { // deleta filme original da coleçao de filmes
-            dataDesc();         // faz refresh dos filmes para tirar o botao
+        movie.delete().then(()=>{               // deleta filme original da coleçao de filmes não-vistos
+            dataDesc();                         // faz refresh dos filmes para tirar o botao
             console.log("Document successfully deleted!");
         }).catch((error) => {
             console.error("Error removing document: ", error);
@@ -438,16 +412,6 @@ function saveWatchedMovie(movie){
 
     });
 
-}
-
-// decrementa -1 a filmes nao-vistos
-function setCountMovies(){
-    return countMovies = countMovies-1;
-}
-
-// acrescenta +1 a filmes vistos
-function setSeenMovies(){
-    return seenMovies = seenMovies+1;
 }
 
 function search(){
@@ -470,12 +434,16 @@ function search(){
     });
 }
 
+// Não sei onde usa
 function avaliationInput(){
     const input = document.getElementById("recipient-name").value;
     
 }
 
-
+// botao de logout
+btnLogout.addEventListener('click', function(){
+    logout();
+});
 
 // window.addEventListener("scroll", function (event) {
 //     var scroll = this.scrollY;

@@ -1,3 +1,4 @@
+// controla modal quando user add opinião sobre filme
 function addRatCom(){
 
     // ao clicar no botão ENVIAR envia infos para o firebase
@@ -13,6 +14,7 @@ function addRatCom(){
 
 }
 
+// controla modal quando user edita opinião sobre filme
 function setRatCom(rating, comment){
 
     $("#recipient-name").val(rating);
@@ -32,7 +34,7 @@ function setRatCom(rating, comment){
 }
 
 // depois de salvar filme
-//ao clicar no botão "Lista de Filmes" vai para pagina de Lista de Filmes
+// ao clicar no botão "Lista de Filmes" vai para pagina de Lista de Filmes
 $("#btn-movie-list").on("click", function(){ 
         
     window.location.replace('movies.html');

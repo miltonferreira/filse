@@ -50,14 +50,23 @@ label {
     object-fit: cover;
 }
 
+/* ------------ Config relacionado ao AVATAR ------------ */
+
 #avatar {
     border-style: solid;
     border-color: #3f51b5;
     border-width: 3px;
 }
 
-#avatar-change:hover {
-    cursor: pointer;
+#avatar-change {
+    width: 130px;
+    height: 50px;
+    
+}
+
+#avatar-change > label > img {
+    border-style: solid;
+    border-color: #3f51b5;
 }
 
 .center_el {
@@ -67,22 +76,23 @@ label {
     /* margin-top: 50px; */
 }
 
-.center_el_2 {
-    /* top: 50%; */
-    left: 45%;
-    width: 150px;
-    height: 150px;
-}
-
-.center_el_3 {
+.over-avatar {
     left: 53%;
-    width: 130px;
-    height: 50px;
 }
 
-.center_el_4 {
-    left: 44%;
-    height: 33px;
+.over-btn > button{
+    background-color: #3f51b5;
+    text-decoration: none;
+    border: 2px solid #3f51b5;
+    color: white;
+    transition: 0.3s;
+}
+
+.over-btn > button:hover{
+    
+    background-color: #576ce4;
+    border: 2px solid #3f51b5;
+    
 }
 
 .center_el_within_block {
@@ -90,18 +100,28 @@ label {
     margin-right: auto!important;
 }
 
-.pos_relative {
+/* -------------------  Positions -------------------  */ 
+
+.pos-relative {
+    /* Esta posição faz com o elemento fique posicionado em relação a sua própria posição. */
+    /* Pode ser usado para deslocar o elemento em relação a ele mesmo e também posicionar a fim de afetar elementos descendentes. */
     position: relative;
 }
 
-.pos_absolute {
-    position: absolute;
+.pos-absolute {
+    /* Faz com o elemento fique posicionado fixamente em relação ao ancestral posicionado mais próximo. */
+    position: absolute; 
     bottom: -30px;
+    
 }
 
-.pos_absolute_2 {
-    position: absolute;
-    bottom: -30px;
+/* -------------------  Display/FlexBox -------------------  */
+
+.dpFlexCenter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 100px;    /*faz o avatar sair da borda inferior do seu pai*/
 }
 
 .bio_text {
@@ -149,8 +169,8 @@ label {
 }
 
 @media (max-width: 882px){
-    .center_el_2 {
-        left: 40%;
+    .over-avatar {
+        left: 55%;
     }
 }
 
@@ -158,47 +178,46 @@ label {
     .btn-group-lg>.btn, .btn-lg {
         padding: .5rem 3rem;
     }
+    
 }
 
 @media (max-width: 600px){
-    .center_el_2 {
-        left: 37%;
+    .over-avatar {
+        left: 58%;
     }
+    
 }
 
 @media (max-width: 529px){
-    .center_el_2 {
-        left: 34%;
-    }
+    
     .btn-group-lg>.btn, .btn-lg {
         padding: .5rem 0.9rem;
     }
 }
 
 @media (max-width: 425px){
-    .center_el_2 {
-        left: 31%;
-    }
+    
     .btn-group-lg>.btn, .btn-lg {
         padding: .4rem 0.7rem;
         font-size: 1rem;
     }
+
+    .over-avatar {
+        left: 61%;
+    }
+
 }
 
 @media (max-width: 375px){
-    .center_el_2 {
-        left: 27%;
-    }
+    
 }
 
 @media (max-width: 320px){
-    .center_el_2 {
-        left: 23%;
+    .over-avatar {
+        left: 64%;
     }
 }
 
 @media (max-width: 275px){
-    .center_el_2 {
-        left: 17%;
-    }
+    
 }
