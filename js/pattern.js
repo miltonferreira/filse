@@ -3,7 +3,14 @@
 function logout(){
     firebase.auth().signOut().catch((error) =>{
         alert('Falha ao sair: ' + error);
-      });
+    });
+    
+    // logout com implemental <<<<<<<<<<<<<<<<<<<<<<<<<
+    //   firebase.auth().signOut().then(()=> {
+    //     // Sign-out successful.
+    //   }).catch(function(error) {
+    //     // An error happened.
+    //   });
 }
 
 function convertToDate(time){

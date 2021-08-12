@@ -15,7 +15,7 @@ var userData = null;        // recebe data do user
 
 // login por email e senha ------------------------------------------------------------------
 
-// renderiza formulario de login e senha
+// renderiza botões de login e senha
 function renderLogin() {
 
     let loginForm = document.querySelector('#loginForm');
@@ -36,8 +36,8 @@ function renderLogin() {
                 </div>
             </form>
 
-            <button class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" id="btnLogin">Log In</button>
-            <button class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" onclick="renderRegister()">Register</button>
+            <button class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" id="btnLogin">Login</button>
+            <button class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" onclick="renderRegister()">Cadastrar</button>
             
             <div id="btnLoginGoogle" class="google-btn">
                 <div class="google-icon-wrapper">
@@ -48,7 +48,7 @@ function renderLogin() {
 
         `;
 
-        getBtnLogin();         // recupera referencias para o botao e form
+        getBtnLogin();      // recupera referencias para o botao e form
         getBtnGoogle();     // recupera ouvinte do botao de login do google
     
 }
@@ -60,7 +60,7 @@ function getBtnLogin(){
     inputEmail = document.getElementById('inputEmail');
     inputPassword = document.getElementById('inputPassword');
 
-    btnLogin.addEventListener('click', function(){
+    btnLogin.addEventListener('click', ()=>{
 
         firebase.auth().signInWithEmailAndPassword(inputEmail.value, inputPassword.value)
         .then((userData) => {
@@ -75,7 +75,7 @@ function getBtnLogin(){
     });
 }
 
-// criar login por email e senha ------------------------------------------------------------------
+// #region  criar USER por email e senha
 
 // renderiza formulario de registro
 function renderRegister() {
@@ -87,6 +87,7 @@ function renderRegister() {
     loginForm.innerHTML = `
 
             <form> 
+                <div class="alert alert-primary" role="alert">Novo Usuário</div>
                 <div class="form-floating">
                     <input type="email" id="regEmail" class="form-control"  placeholder="name@example.com">
                     <label for="floatingInput">Insira Email</label>
@@ -97,25 +98,25 @@ function renderRegister() {
                 </div>
             </form>
 
-            <button id="btnRegister" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;">Send</button>
-            <button id="btnBack" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" onclick="renderLogin()">Back</button>
+            <button id="btnRegister" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;">Enviar</button>
+            <button id="btnBack" class="w-100 btn btn-lg btn-primary" style="margin-bottom: 10px;" onclick="renderLogin()">Voltar</button>
 
         `;
         
         getInserts();   // procura a caixa de email e senha e o botao de SEND
 }
 
-// procura a caixa de email e senha e o botao de SEND
+// procura a caixa de email e senha e o botao de Enviar
 function getInserts(){
     btnRegister = document.querySelector('#btnRegister');
     regEmail = document.querySelector('#regEmail');
     regPassword = document.querySelector('#regPassword');
 
-    register(); // ouvinte para o botão de SEND
+    register(); // ouvinte para o botão de Enviar
 }
 
 // cria novo user no firebase database
-// aponta um ouvinte para o botão de SEND para fazer registro de novo user quando clicar
+// aponta um ouvinte para o botão de Enviar para fazer registro de novo user quando clicar
 function register(){
 
     btnRegister.addEventListener('click', function(){
@@ -130,7 +131,7 @@ function register(){
             newUser(userCredential.user, false);    // cria user com email e senha
             renderLogin();                          // chama formulario de login
 
-            alert("Registro feito com sucesso!");
+            alert("Cadastro feito com sucesso!");
 
         })
         .catch((error) => {
@@ -142,8 +143,9 @@ function register(){
     });
     
 }
+//#endregion
 
-// login pelo gmail ------------------------------------------------------------------
+// #region login pelo gmail
 
 var provider = new firebase.auth.GoogleAuthProvider();
 provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
@@ -155,6 +157,7 @@ function getBtnGoogle(){
     btnLoginGoogle = document.getElementById('btnLoginGoogle');
 
     btnLoginGoogle.addEventListener("click", function(){
+
         firebase.auth().signInWithPopup(provider).then(function(result) {
             // This gives you a Google Access Token. You can use it to access the Google API.
             var token = result.credential.accessToken;
@@ -162,8 +165,7 @@ function getBtnGoogle(){
             var user = result.user;
             newUser(user, true);    // cria user com o google
             
-          })
-          .catch(function(error) {
+          }).catch(function(error) {
             // Handle Errors here.
             var errorCode = error.code;
             var errorMessage = error.message;
@@ -173,11 +175,13 @@ function getBtnGoogle(){
             // The firebase.auth.AuthCredential type that was used.
             var credential = error.credential;
             // ...
-          });
+        });
     });
 }
 
-// cria um novo usuario no firebase database
+//#endregion
+
+// cria um novo usuario no firebase
 function newUser(user, boolean){
     // procura o UID do user na lista
     userData = firebase.firestore().collection("Users").doc(user.uid);
@@ -193,7 +197,74 @@ function newUser(user, boolean){
 // true == Google | false == Email e Senha
 // cria novo user no firebase
 function setNewUser(user, boolean){
+
+    let profile = null;
+
     if(boolean == true){
+        profile = {
+            bio: "insira uma biografia de cinefilo",
+            country: "worldwide",
+            email: user.email,
+            name: user.displayName,
+            photo: user.photoURL,
+        }
+    }else{
+        profile = {
+            bio: "insira uma biografia de cinefilo",
+            country: "worldwide",
+            email: user.email,
+            name: "New User",
+            photo: "img/blank-profile.png",
+        }
+    }
+
+    userData.set({
+        
+        bio: profile.bio,
+        country: profile.country,
+        email: profile.email,
+        name: profile.name,
+        photo: profile.photo,
+
+    }, { merge: true }).then(()=>{ // se user nao existir é criado na coleção User
+        // true = login google | false = login senha/email então desloga
+        boolean?login(user):logout();
+    });
+
+}
+
+// Permite ou não ir para proxima página se obj tem UID
+function login(user){
+
+    if(user.uid){
+        window.location.replace('movies.html');    
+    } else {
+        window.location.replace('index.html');
+    }
+}
+
+// se tiver logado nao deixa ficar no index
+function verifyLogin(){
+    // verifica o status do login do user
+    firebase.auth().onAuthStateChanged((user) => {
+        if(user) {
+            userData = firebase.firestore().collection("Users").doc(user.uid);
+            userData.get().then(function(doc){
+                if(doc.exists){
+                    window.location.replace('movies.html'); // se tiver logado redireciona para o movies.html
+                }
+            });
+        }
+    });
+}
+
+getBtnGoogle();     // ouvinte para botão do google
+getBtnLogin();      // ouvinte para botão com login e senha
+verifyLogin();      // verifica se está logado
+
+// backup da function setNewUser
+/*
+if(boolean == true){
         userData.set({
             bio: "insira uma biografia de cinefilo",
             countMovies: 0,
@@ -220,46 +291,5 @@ function setNewUser(user, boolean){
             logout();       // se fazer um novo user com email e senha desloga em seguida
         });
     }
-}
 
-// Permite o não ir para proxima página se obj tem UID
-function login(user){
-
-    // user = firebase.auth().currentUser;
-
-    if(user.uid != null){
-        window.location.replace('movies.html');    
-    } else {
-        window.location.replace('index.html');
-    }
-}
-
-// se tiver logado nao deixa ficar no index
-function verifyLogin(){
-    // verifica o status do login do user
-    firebase.auth().onAuthStateChanged((user) => {
-        if(user != null) {
-            userData = firebase.firestore().collection("Users").doc(user.uid);
-            userData.get().then(function(doc){
-                if(doc.exists){
-                    window.location.replace('movies.html'); // se tiver logado redireciona para o movies.html
-                }
-            });
-        }
-    });
-}
-
-// desloga da conta
-function logout(){
-
-    firebase.auth().signOut().then(function() {
-        // Sign-out successful.
-      }).catch(function(error) {
-        // An error happened.
-      });
-
-}
-
-getBtnGoogle();     // ouvinte para botão do google
-getBtnLogin();      // ouvinte para botão com login e senha
-verifyLogin();      // verifica se está logado
+*/
