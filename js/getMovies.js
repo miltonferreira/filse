@@ -161,6 +161,9 @@ function listMovies(docSnapshots){
 
 // paginação para avançar lista de filmes
 function paginationNext(){
+
+    loadingPage();  // mostra esqueleto de loading enquanto carrega filmes
+
     // se for a primeira vez que carrega a lista de filmes cai nessa condição
     if(isNext == false){
 
@@ -228,6 +231,8 @@ function paginationNext(){
 // paginação de voltar lista de filmes
 function paginationPrev(){
 
+    loadingPage();  // mostra esqueleto de loading enquanto carrega filmes
+
     var first = dbMovie.orderBy(descName, orderName).startAt(prev[prevPos - 1]).limit(count);
 
             first.get().then((docSnapshots) => {
@@ -254,6 +259,50 @@ function paginationPrev(){
                     }
 
         });
+}
+
+// Mostra esqueleto de loading enquanto tiver carregando filmes
+function loadingPage(){
+    document.querySelector('#movies').innerHTML = `
+        <div class="movie center_el" style="padding: 5px;">
+            <div class="card mb-3" style="max-width: 940px;">
+                <div class="row no-gutters">
+                <div class="col-md-4 img-center">
+                    <div class="loading img-skeleton center_el_2"></div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title loading title-skeleton"></h5>
+                        <h6 class="card-text loading rating-skeleton"></h6>
+                        <p class="card-text card-scroll loading com-skeleton"></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text loading button-skeleton"></p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="movie center_el" style="padding: 5px;">
+            <div class="card mb-3" style="max-width: 940px;">
+                <div class="row no-gutters">
+                <div class="col-md-4 img-center">
+                    <div class="loading img-skeleton center_el_2"></div>
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h5 class="card-title loading title-skeleton"></h5>
+                        <h6 class="card-text loading rating-skeleton"></h6>
+                        <p class="card-text card-scroll loading com-skeleton"></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text-info loading add-skeleton"><small></small></p>
+                        <p class="card-text loading button-skeleton"></p>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    `;
 }
 
 // ativa ou desativa botoes de prev e next ------------------------------------------------------------------------------
@@ -382,7 +431,8 @@ function updateInfoMovie(rating, comment){
         watched: true,
     };
 
-    Ref.set({data}, { merge: true }).then(()=>{
+    // se colocar {data} infos vão como map
+    Ref.set(data, {merge: true}).then(()=>{
 
         // resposta ao conseguir modificar o valor ---------------------------
         if(mouseup == false){

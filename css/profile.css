@@ -41,13 +41,13 @@ label {
     overflow: hidden;
     width: 150px;
     height: 150px;
-    
 }
 
 .profile-pic {
+    object-fit: cover;
     width:100%;
     height:100%;
-    object-fit: cover;
+    border-radius: 50%;
 }
 
 /* ------------ Config relacionado ao AVATAR ------------ */
@@ -56,12 +56,13 @@ label {
     border-style: solid;
     border-color: #3f51b5;
     border-width: 3px;
+    padding: 3px;
+    margin-bottom: -20px;   /* faz o avatar sair da margem inferior */
 }
 
 #avatar-change {
     width: 130px;
     height: 50px;
-    
 }
 
 #avatar-change > label > img {
@@ -73,14 +74,13 @@ label {
     display: block;
     margin-left: auto!important;
     margin-right: auto!important;
-    /* margin-top: 50px; */
 }
 
 .over-avatar {
     left: 53%;
 }
 
-.over-btn > button{
+.over-btn > button {
     background-color: #3f51b5;
     text-decoration: none;
     border: 2px solid #3f51b5;
@@ -88,7 +88,7 @@ label {
     transition: 0.3s;
 }
 
-.over-btn > button:hover{
+.over-btn > button:hover {
     
     background-color: #576ce4;
     border: 2px solid #3f51b5;
@@ -111,17 +111,16 @@ label {
 .pos-absolute {
     /* Faz com o elemento fique posicionado fixamente em relação ao ancestral posicionado mais próximo. */
     position: absolute; 
-    bottom: -30px;
-    
+    bottom: -30px; 
 }
 
 /* -------------------  Display/FlexBox -------------------  */
 
 .dpFlexCenter {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    padding-top: 100px;    /*faz o avatar sair da borda inferior do seu pai*/
+    justify-content: flex-end;
 }
 
 .bio_text {
@@ -178,14 +177,12 @@ label {
     .btn-group-lg>.btn, .btn-lg {
         padding: .5rem 3rem;
     }
-    
 }
 
 @media (max-width: 600px){
     .over-avatar {
         left: 58%;
     }
-    
 }
 
 @media (max-width: 529px){
