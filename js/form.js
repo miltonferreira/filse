@@ -8,7 +8,9 @@ let title = null;
 let urlPhoto = null;
 let description = null;
 let director = null;
-let age = null;
+let age = 0;
+
+let timestamp, comment,  rating;
 
 // Start grabbing our DOM Element
 let submitBtn = null;
@@ -24,6 +26,11 @@ function submitMovie(){
     director = document.querySelector('#director');
     age = document.querySelector('#age');
 
+    //provisorio
+    timestamp = document.querySelector('#timestamp');
+    comment = document.querySelector('#comment');
+    rating = document.querySelector('#rating');
+
     // Start grabbing our DOM Element
     submitBtn = document.querySelector('#submit');
 
@@ -35,20 +42,21 @@ function submitMovie(){
     });
 
     // verifica se campos estão preenchidos ----------------------------------------------------------------
-    alertReturn = checkForm(title, urlPhoto, description, age, director);
+    alertReturn = checkForm(title, urlPhoto, description, director, age);
 
     if(alertReturn){
     
     } else {
 
-        saveMovie(title.value, urlPhoto.value, description.value, age.value, director.value);
+        saveMovie(title.value, urlPhoto.value, description.value, director.value, age.value, 
+            timestamp.value, comment.value, rating.value);
 
     }
 
 }
 
 // checa se os campos do formulario foram preenchidos -------------------------------
-function checkForm(title, urlPhoto, description, age, director){
+function checkForm(title, urlPhoto, description, director, age){
 
     if(title.value == ""){
         alerts[0].style = "display: block";
@@ -98,8 +106,12 @@ function clearForm(){
     title.value = "";
     urlPhoto.value = "";
     description.value = "";
-    age.value = "";
     director.value = "";
+    age.value = "";
+    // provisório------------------
+    timestamp.value = "";
+    comment.value = "";
+    rating.value = "";
 }
 
 // formulario add novo filme -------------------------------------------------
@@ -115,14 +127,19 @@ function newMovie(){
 
         <div class="container mt-3 card card-body p-4">
             <div class="form-group">
-                <label for="Name">Titulo</label>
-                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Titulo</div>
-                <input id="title" class="form-control" type="text" placeholder="Digite o nome do filme" >
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Ano</div>
+                <label for="Message">Timestamp</label>
+                <input id="timestamp" class="form-control" type="number" placeholder="Digite o tempo">
             </div>
             <div class="form-group">
-                <label for="Name">URL de Foto</label>
-                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Foto</div>
-                <input id="urlPhoto" class="form-control" type="text" placeholder="Digite um link de foto">
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Ano</div>
+                <label for="Message">Ano</label>
+                <input id="age" class="form-control" type="number" placeholder="Digite o ano do filme">
+            </div>
+            <div class="form-group">
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Ano</div>
+                <label for="Message">Comment</label>
+                <input id="comment" class="form-control" type="text" placeholder="Digite o commentario">
             </div>
             <div class="form-group">
                 <label for="Email">Descrição</label>
@@ -135,9 +152,19 @@ function newMovie(){
                 <input id="director" class="form-control" type="text" placeholder="Digite o nome do diretor">
             </div>
             <div class="form-group">
+                <label for="Name">URL de Foto</label>
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Foto</div>
+                <input id="urlPhoto" class="form-control" type="text" placeholder="Digite um link de foto">
+            </div>
+            <div class="form-group">
                 <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Ano</div>
-                <label for="Message">Ano</label>
-                <input id="age" class="form-control" type="text" placeholder="Digite o ano do filme">
+                <label for="Message">Rating</label>
+                <input id="rating" class="form-control" type="number" placeholder="Digite o rating">
+            </div>
+            <div class="form-group">
+                <label for="Name">Titulo</label>
+                <div class="alert alert-danger" role="alert" style="display: none">Necessário preencher o campo Titulo</div>
+                <input id="title" class="form-control" type="text" placeholder="Digite o nome do filme" >
             </div>
             <button id="submit" class="btn btn-primary" data-target="#saveModalCenter" onclick="submitMovie()">Enviar</button>
         </div>
@@ -149,18 +176,19 @@ function newMovie(){
 }
 
 // salva o filme no firebase ----------------------------------------
-function saveMovie(titleInput, urlPhotoInput, descriptionInput, ageInput, directorInput){
+function saveMovie(titleInput, urlPhotoInput, descriptionInput, directorInput, ageInput, 
+    timestamp, comment, rating){
 
     var data = {
-        added: updateTime(),
+        added: parseInt(timestamp),
         title: titleInput,
         photo: urlPhotoInput,
         description: descriptionInput,
-        age: ageInput,
         director: directorInput,
-        comment: null, 
-        rating: 0,
-        watched: false,
+        age: parseInt(ageInput),
+        comment: comment, 
+        rating: parseInt(rating),
+        watched: true,
     };
     
     // salva o filme no firebase

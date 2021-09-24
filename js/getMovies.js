@@ -39,9 +39,15 @@ firebase.auth().onAuthStateChanged((user) => {
 
         user.get().then((doc) =>{
             if(doc.exists){
-                renderAvatar(doc.data().photo);         // adiciona a foto do user
+                //renderAvatar(doc.data().photo);         // adiciona a foto do user
+                renderAvatar(doc.get("Profile").photo);         // adiciona a foto do user
                 dbMovie.get().then((snapshot)=>{
                     countMovies = snapshot.size;
+
+                    // snapshot.forEach((doc) => {
+                    //     console.log(doc.data());
+                    // });
+
                     dataDesc();  // mostra filmes adicionados dos atuais aos antigos
                 });
             } else {

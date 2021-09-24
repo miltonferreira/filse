@@ -24,12 +24,13 @@ firebase.auth().onAuthStateChanged((user) => {
                 
         userData = firestore.collection("Users").doc(user.uid);
 
-        dbMovies = userData.collection("Movies");                // recebe coleção de filmes não-vistos
-        dbVMovies = userData.collection("viewedMovies");         // pega a coleção de filmes vistos
+        dbMovies = userData.collection("vMovies");                // recebe coleção de filmes não-vistos
+        dbVMovies = userData.collection("vMovies");         // pega a coleção de filmes vistos
 
         userData.get().then((doc)=>{
             if(doc.exists){  
-                userInfos = doc.data();     // recebe nome, avatar e outras infos do user
+                //userInfos = doc.data();     // recebe nome, avatar e outras infos do user
+                userInfos = doc.get("Profile");
                 getInfoUser();              // mostra infos do user
             } else {
                 window.location.replace('index.html');
