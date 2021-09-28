@@ -18,7 +18,8 @@ firebase.auth().onAuthStateChanged((user) => {
 
         userData.get().then((doc)=>{
             if(doc.exists){
-                renderAvatar(doc.data().photo);         // adiciona a foto do user
+                //renderAvatar(doc.data().photo);               // adiciona a foto do user  *** pega photo do doc
+                renderAvatar(doc.get("Profile").photo);         // adiciona a foto do user  *** pega photo do map
                 newMovie();     // carrega formulario de add filme
             } else {
                 window.location.replace('index.html');

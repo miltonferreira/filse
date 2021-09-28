@@ -24,7 +24,7 @@ firebase.auth().onAuthStateChanged((user) => {
                 
         userData = firestore.collection("Users").doc(user.uid);
 
-        dbMovies = userData.collection("vMovies");                // recebe coleção de filmes não-vistos
+        dbMovies = userData.collection("Movies");          // recebe coleção de filmes não-vistos
         dbVMovies = userData.collection("vMovies");         // pega a coleção de filmes vistos
 
         userData.get().then((doc)=>{
@@ -127,6 +127,7 @@ function sendStorage(file){
                 storageRef.getDownloadURL().then((downloadURL)=>{
 
                     removeAvatar(userInfos.photo);  // remove avatar antigo do storage
+
                     userInfos.photo = downloadURL;  // recebe nova url do avatar
             
                     changeAvatar(userInfos.photo);   // atualiza url do avatar no firestore
@@ -151,13 +152,16 @@ function changeAvatar(imgUrl){
 
     let photoFS = firestore.collection("Users");
 
-    photoFS.doc(firebase.auth().currentUser.uid).set({
-            photo: imgUrl,
-        }, { merge: true }).then(()=>{
-            alert('Avatar atualizado!');
-        }).catch((error)=>{
-            alert('Falha: ', error);
-        });
+    photoFS.doc(firebase.auth().currentUser.uid).set({    
+        'Profile': {
+            'photo': imgUrl // altera campo do map Profile
+        }
+        //photo: imgUrl, //altera um campo de doc
+    }, { merge: true }).then(()=>{
+        alert('Avatar atualizado!');
+    }).catch((error)=>{
+        alert('Falha: ', error);
+    });
 }
 
 // remove avatar antigo do storage
