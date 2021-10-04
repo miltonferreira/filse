@@ -35,7 +35,7 @@ firebase.auth().onAuthStateChanged((user) => {
         user = firestore.collection("Users").doc(user.uid);
                 
         dbMovie = user.collection("Movies");             // pega a coleção no firestore do user
-        dbVMovie = user.collection("viewedMovies");      // recebe colecao de filmes vistos do user
+        dbVMovie = user.collection("vMovies");      // recebe colecao de filmes vistos do user
 
         user.get().then((doc) =>{
             if(doc.exists){
@@ -457,7 +457,7 @@ function saveWatchedMovie(movie){
     
     movie.get().then((doc) => {
         
-        dbVMovie.doc(movieId).set(doc.data());  // salva viu na coleção de filmes vistos
+        dbVMovie.doc(movieId).set(doc.data());  // salva filme na coleção de filmes vistos
 
         movie.delete().then(()=>{               // deleta filme original da coleçao de filmes não-vistos
             dataDesc();                         // faz refresh dos filmes para tirar o botao
