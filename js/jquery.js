@@ -4,10 +4,12 @@ function addRatCom(){
     // ao clicar no botão ENVIAR envia infos para o firebase
     $("#btn-enviar").on("click", function(){ 
         
-        rat = $("#recipient-name").val();
-        com = $("#message-text").val();
+        rat = $("#rate-field").val();
+        com = $("#comment-field").val();
 
         updateInfoMovie(rat, com);
+
+        clearFields();                      // limpa formulario
         
         $('#exampleModal').modal('hide');   // fecha modal ao clicar no botao
     });
@@ -17,20 +19,27 @@ function addRatCom(){
 // controla modal quando user edita opinião sobre filme
 function setRatCom(rating, comment){
 
-    $("#recipient-name").val(rating);
-    $("#message-text").val(comment);
+    $("#rate-field").val(rating);
+    $("#comment-field").val(comment);
 
     // ao clicar no botão ENVIAR envia infos para o firebase
     $("#btn-enviar").on("click", function(){ 
         
-        rat = $("#recipient-name").val();
-        com = $("#message-text").val();
+        rat = $("#rate-field").val();
+        com = $("#comment-field").val();
 
         updateInfoMovie(rat, com);
+
+        clearFields();                      // limpa formulario
         
         $('#exampleModal').modal('hide');   // fecha modal ao clicar no botao
     });
     
+}
+
+function clearFields(){
+    $("#rate-field").val('');
+    $("#comment-field").val('');
 }
 
 // depois de salvar filme
